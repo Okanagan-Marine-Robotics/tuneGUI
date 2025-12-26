@@ -13,6 +13,7 @@ from rclpy.node import Node
 from tune_gui.parameter_tree_widget import ParameterTreeWidget
 from tune_gui.ros2_parameter_client import ROS2ParameterClient
 from tune_gui.yaml_handler import YAMLHandler
+from tune_gui.mission_command_publisher import MissionCommandPublisher
 
 
 class TuneGUIMainWindow(QMainWindow):
@@ -22,6 +23,7 @@ class TuneGUIMainWindow(QMainWindow):
         self.ros2_client = ROS2ParameterClient(node)
         self.yaml_handler = YAMLHandler()
         self.params_file = params_file
+        self.mission_command_pub = MissionCommandPublisher(node)
         
         self.init_ui()
         self.setup_timers()
@@ -42,6 +44,7 @@ class TuneGUIMainWindow(QMainWindow):
         
         self._setup_toolbar(main_layout)
         self._setup_parameter_area(main_layout)
+        self._setup_simulation_toggle(main_layout)
         
         self.status_bar = QStatusBar()
         self.setStatusBar(self.status_bar)
@@ -76,6 +79,12 @@ class TuneGUIMainWindow(QMainWindow):
         toolbar_layout.addWidget(self.apply_yaml_btn)
         
         parent_layout.addLayout(toolbar_layout)
+        
+    def _setup_simulation_toggle(self, parent_layout):
+        self.toggle_sim_btn = QPushButton("Toggle Mission Start")
+        self.toggle_sim_btn.clicked.connect(self.toggle_mission_start)
+        #self.toggle_sim_btn.setEnabled(False)
+        parent_layout.addWidget(self.toggle_sim_btn)
 
     def _setup_parameter_area(self, parent_layout):
         splitter = QSplitter(Qt.Orientation.Horizontal)
@@ -155,6 +164,10 @@ class TuneGUIMainWindow(QMainWindow):
             self.update_status(f"Failed to update {node_name}.{param_name}")
             QMessageBox.warning(self, "Parameter Update Failed", 
                               f"Could not update parameter {param_name}")
+            
+    def toggle_mission_start(self):
+        self.mission_command_pub.toggle_mission_control()
+        self.update_status("published?")
             
     def load_yaml_dialog(self):
         """Open file dialog to load params.yaml"""
