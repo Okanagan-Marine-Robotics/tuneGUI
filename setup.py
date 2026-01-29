@@ -18,7 +18,7 @@ setup(
     maintainer='OKMR Team',
     maintainer_email='okmr@ubco.ca',
     description='PyQt5-based GUI for tuning ROS2 node parameters and params.yaml files',
-    license='MIT',
+    license='GPLv3',
     tests_require=['pytest'],
     entry_points={
         'console_scripts': [
