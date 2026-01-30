@@ -1,12 +1,12 @@
 import rclpy
 from rclpy.node import Node
 
-from okmr_msgs import MissionCommand
+from okmr_msgs.msg import MissionCommand
 
 class MissionCommandPublisher(Node):
     def __init__(self):
         super().__init__('publisher')
-        self.publisher_ = self.create_publisher("okmr_msgs/msg/MissionCommand", "/mission_command", 2)
+        self.publisher_ = self.create_publisher(MissionCommand, "/mission_command", 2)
         
     def toggle_mission_control(self):
         self.subscription = self.create_subscription(
